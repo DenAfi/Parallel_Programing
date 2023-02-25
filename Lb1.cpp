@@ -3,8 +3,8 @@
 #include <omp.h>
 using namespace std;
 
-#define NUM_THREADS 16
-
+#define NUM_THREADS 4
+#define TEST_COUNT 5
 int main() {
 	setlocale(LC_ALL, "");
 	
@@ -20,21 +20,20 @@ int main() {
 		b[i] = 5;
 	}
 	cout << "Initialization's end" << endl;
-
+	cout << "Number of threads " << NUM_THREADS << endl;
 	omp_set_dynamic(0);
-	beg = omp_get_wtime();
-	#pragma omp parallel num_threads(NUM_THREADS)
-	{
-		#pragma omp for
-		for (int i = 0; i < size; i++) {
-			a[i] = a[i] * b[i];
+	for(int j = 0; j<TEST_COUNT; j++){
+		beg = omp_get_wtime();
+		#pragma omp parallel num_threads(NUM_THREADS)
+		{
+			#pragma omp for
+			for (int i = 0; i < size; i++) {
+				a[i] = a[i] * b[i];
+			}
 		}
+		end = omp_get_wtime();
+		double t = end - beg;
+		cout << j+1 << ") Time: " << t << endl;
 	}
-	end = omp_get_wtime();
-
-	double t = end - beg;
-
-	cout << "Time: " << t << endl;
-
 
 }
